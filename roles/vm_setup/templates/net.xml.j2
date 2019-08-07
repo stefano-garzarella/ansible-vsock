@@ -1,0 +1,10 @@
+<network>
+  <name>{{ item.name  }}</name>
+  <bridge name="{{ item.name }}"/>
+  <forward/>
+  <ip address="{{ item.ip }}" netmask="{{ item.netmask }}">
+    <dhcp>
+      <range start="{{ item.dhcp_start }}" end="{{ item.dhcp_end }}"/>
+    </dhcp>
+  </ip>
+</network>

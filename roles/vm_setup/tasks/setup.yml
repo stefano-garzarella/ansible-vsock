@@ -1,0 +1,39 @@
+---
+
+- name: define networks
+  virt_net:
+      name: "{{ item.name }}"
+      command: define
+      xml: "{{ lookup('template', 'net.xml.j2') }}"
+  with_items: "{{ nets }}"
+
+- name: add VMs in the DHCP pool
+  virt_net:
+      name: "{{ item[0].name }}"
+      command: modify
+      xml: "<host mac='{{ item[1].mac }}' name='{{ item[1].name }}' ip='{{ item[1].ip }}'/>"
+  with_nested:
+    - "{{ nets }}"
+    - "{{ vms }}"
+
+- name: create VMs disk
+  command: "qemu-img create -f qcow2 -F qcow2 -b {{ base_disk_image  }} {{ item.disk }}"
+  with_items: "{{ vms }}"
+
+- name: start networks
+  virt_net:
+      name: "{{ item.name }}"
+      state: active
+  with_items: "{{ nets }}"
+
+- name: define VMs
+  virt:
+      command: define
+      xml: "{{ lookup('template', 'vm.xml.j2') }}"
+  with_items: "{{ vms }}"
+
+- name: start VMs
+  virt:
+      name: "{{ item.name }}"
+      state: running
+  with_items: "{{ vms }}"

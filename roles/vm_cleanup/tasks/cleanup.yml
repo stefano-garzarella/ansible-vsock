@@ -1,0 +1,26 @@
+---
+
+- name: list all defined VMs
+  virt:
+    command: list_vms
+  register: defined_vms
+
+- name: stop VMs
+  virt:
+      name: "{{ item.name }}"
+      state: shutdown
+  with_items: "{{ vms }}"
+  when: item.name in defined_vms.list_vms
+
+- name: destroy VMs
+  virt:
+      name: "{{ item.name }}"
+      command: undefine
+  with_items: "{{ vms }}"
+  when: item.name in defined_vms.list_vms
+
+- name: destroy networks
+  virt_net:
+      name: "{{ item.name }}"
+      state: absent
+  with_items: "{{ nets }}"

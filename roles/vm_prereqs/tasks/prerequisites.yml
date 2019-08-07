@@ -1,0 +1,10 @@
+---
+
+- name: install tools
+  package:
+      name: "{{ item }}"
+      state: present
+  with_items:
+    - '@virtualization'
+    - libguestfs-tools
+    - libvirt-nss

@@ -1,0 +1,13 @@
+---
+
+- include_role:
+    name: vm_prereqs
+    public: yes
+  when: vms is undefined
+  tags:
+    - always
+
+- import_tasks: cleanup.yml
+  tags:
+    - vms
+    - vms:cleanup
