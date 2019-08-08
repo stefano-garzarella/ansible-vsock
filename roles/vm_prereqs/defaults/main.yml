@@ -1,6 +1,8 @@
 ---
 vms:
     - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32" }
+
+vmsL1:
     - {name: vsockvm1, cid: 4, disk: /tmp/vsockvm1.img, ip: 192.168.133.3, mac: "FC:C2:33:00:33:33" }
 
 nets:

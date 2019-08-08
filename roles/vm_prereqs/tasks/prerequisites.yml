@@ -1,6 +1,6 @@
 ---
 
-- name: install tools
+- name: install VMs tools
   package:
       name: "{{ item }}"
       state: present
