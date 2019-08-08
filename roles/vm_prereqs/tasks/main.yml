@@ -1,5 +1,0 @@
----
-
-- import_tasks: prerequisites.yml
-  tags:
-    - always
