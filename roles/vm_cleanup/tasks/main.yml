@@ -1,0 +1,10 @@
+---
+
+- include_role:
+    name: vm_pre
+    public: yes
+  when: vm_loaded is undefined
+  tags:
+    - always
+
+- import_tasks: cleanup.yml

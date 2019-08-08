@@ -1,4 +1,6 @@
 ---
+vm_loaded: 1
+
 vms:
     - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, disk_base: /tmp/vsockvmimages/fedora.img, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32" }
 

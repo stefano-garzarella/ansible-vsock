@@ -3,4 +3,4 @@
   become: yes
   roles:
       - nfs_server
-      - vm
+      - vm_setup
