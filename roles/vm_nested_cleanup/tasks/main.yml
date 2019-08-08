@@ -7,4 +7,4 @@
   tags:
     - always
 
-- import_tasks: setup.yml
+- import_tasks: cleanup.yml

@@ -1,8 +1,8 @@
 <domain type='kvm'>
   <name>{{ item.name }}</name>
-  <memory unit='GiB'>8</memory>
-  <currentMemory unit='GiB'>8</currentMemory>
-  <vcpu placement='static'>4</vcpu>
+  <memory unit='GiB'>1</memory>
+  <currentMemory unit='GiB'>1</currentMemory>
+  <vcpu placement='static'>2</vcpu>
   <os>
     <type arch='x86_64'>hvm</type>
     <boot dev='hd'/>
@@ -54,9 +54,9 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </controller>
     <controller type='pci' index='0' model='pci-root'/>
-    <interface type='network'>
+    <interface type='bridge'>
       <mac address='{{ item.mac }}'/>
-      <source network='{{ item.if }}'/>
+      <source bridge='{{ item.if }}'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </interface>
@@ -105,6 +105,10 @@
       <backend model='random'>/dev/urandom</backend>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
     </rng>
+    <vsock model='virtio'>
+      <cid auto='yes' address='{{ item.cid }}'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
+    </vsock>
   </devices>
 </domain>
 

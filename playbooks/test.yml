@@ -3,7 +3,33 @@
   become: yes
   roles:
       - nfs_server_setup
+      - vm_cleanup
       - vm_setup
+
+- hosts: vsockvm0
+  gather_facts: no
+  user: stefano
+  become: yes
+  pre_tasks:
+      - name: Wait for vsockvm0 to become reachable
+        wait_for_connection:
+
+      - name: Gather facts for first time
+        setup:
+
+  roles:
+      - vm_nested_setup
+
+- hosts: vsockvm1
+  gather_facts: no
+  user: stefano
+  become: yes
+  pre_tasks:
+      - name: Wait for vsockvm0 to become reachable
+        wait_for_connection:
+
+      - name: Gather facts for first time
+        setup:
 
 - hosts: localhost
   tasks:

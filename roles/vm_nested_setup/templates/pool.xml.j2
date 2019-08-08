@@ -1,0 +1,11 @@
+<pool type="netfs">
+  <name>{{ item.name }}</name>
+  <source>
+    <host name="{{ item.host }}"/>
+    <dir path="{{ item.remote_dir }}"/>
+    <format type='nfs'/>
+  </source>
+  <target>
+    <path>{{ item.local_dir }}</path>
+  </target>
+</pool>

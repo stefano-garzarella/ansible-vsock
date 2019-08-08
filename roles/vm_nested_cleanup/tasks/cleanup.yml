@@ -8,7 +8,7 @@
 - name: stop VMs
   virt:
       name: "{{ item.name }}"
-      state: destroyed
+      state: shutdown
   with_items: "{{ vms }}"
   when: item.name in defined_vms.list_vms
 

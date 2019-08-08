@@ -1,0 +1,44 @@
+---
+- copy:
+    src: vsockbridge.sh
+    dest: /tmp/vsockbridge.sh
+    mode: 0777
+
+- name: setup bridges
+  command: "bash -x /tmp/vsockbridge.sh {{ item.name }} {{ item.if }}"
+  with_items: "{{ bridges }}"
+
+- template:
+    src:  pool.xml.j2
+    dest: "{{ item.xml }}"
+  with_items: "{{ pools }}"
+
+- name: create pool mount points
+  file:
+    path: "{{ item.local_dir }}"
+    state: directory
+  with_items: "{{ pools }}"
+
+- name: define pools
+  command: "virsh pool-define {{ item.xml }}"
+  with_items: "{{ pools }}"
+
+- name: start pools
+  command: "virsh pool-start {{ item.name }}"
+  with_items: "{{ pools }}"
+
+- name: create VMs disk
+  command: "qemu-img create -f qcow2 -F qcow2 -b {{ item.disk_base  }} {{ item.disk }}"
+  with_items: "{{ nested_vms }}"
+
+- name: define VMs
+  virt:
+      command: define
+      xml: "{{ lookup('template', 'vm-nested.xml.j2') }}"
+  with_items: "{{ nested_vms }}"
+
+- name: start VMs
+  virt:
+      name: "{{ item.name }}"
+      state: running
+  with_items: "{{ nested_vms }}"

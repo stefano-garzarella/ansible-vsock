@@ -48,7 +48,7 @@
       xml: "<host mac='{{ item[1].mac }}' name='{{ item[1].name }}' ip='{{ item[1].ip }}'/>"
   with_nested:
     - "{{ nets }}"
-    - "{{ vms_nested }}"
+    - "{{ nested_vms }}"
 
 - name: create VMs disk
   command: "qemu-img create -f qcow2 -F qcow2 -b {{ item.disk_base  }} {{ item.disk }}"

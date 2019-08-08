@@ -8,3 +8,7 @@
     - '@virtualization'
     - libguestfs-tools
     - libvirt-nss
+    - libvirt
+    - python2-libvirt
+    - python2-lxml
+    - nfs-utils
