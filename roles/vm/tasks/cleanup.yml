@@ -12,14 +12,24 @@
   with_items: "{{ vms }}"
   when: item.name in defined_vms.list_vms
 
-- name: destroy VMs
+- name: undefine VMs
   virt:
       name: "{{ item.name }}"
       command: undefine
   with_items: "{{ vms }}"
   when: item.name in defined_vms.list_vms
 
-- name: destroy networks
+- name: stop pools
+  command: "virsh pool-destroy {{ item.name }}"
+  with_items: "{{ pools }}"
+  ignore_errors: yes
+
+- name: undefine pools
+  command: "virsh pool-undefine {{ item.name }}"
+  with_items: "{{ pools }}"
+  ignore_errors: yes
+
+- name: undefine networks
   virt_net:
       name: "{{ item.name }}"
       state: absent

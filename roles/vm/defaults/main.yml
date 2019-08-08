@@ -1,11 +1,12 @@
 ---
 vms:
-    - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32" }
+    - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, disk_base: /tmp/vsockvmimages/fedora.img, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32" }
 
-vmsL1:
-    - {name: vsockvm1, cid: 4, disk: /tmp/vsockvm1.img, ip: 192.168.133.3, mac: "FC:C2:33:00:33:33" }
+vms_nested:
+    - {name: vsockvm1, cid: 4, disk: /tmp/vsockvm1.img, disk_base: /tmp/vsockvmimages/fedora.  img, ip: 192.168.133.3, mac: "FC:C2:33:00:33:33" }
 
 nets:
     - {name: vsockbr0, ip: 192.168.133.1, netmask: 255.255.255.0, dhcp_start: 192.168.133.2, dhcp_end: 192.168.133.254}
 
-base_disk_image: /home/stefano/works/virt/images/fedora.img
+pools:
+    - {name: vsockpool0, xml: "/tmp/vsockpool0.xml", host: 192.168.133.1, remote_dir: "/home/stefano/works/virt/images", local_dir: "/tmp/vsockvmimages"}

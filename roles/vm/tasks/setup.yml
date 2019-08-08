@@ -7,6 +7,31 @@
       xml: "{{ lookup('template', 'net.xml.j2') }}"
   with_items: "{{ nets }}"
 
+- name: start networks
+  virt_net:
+      name: "{{ item.name }}"
+      state: active
+  with_items: "{{ nets }}"
+
+- template:
+    src:  pool.xml.j2
+    dest: "{{ item.xml }}"
+  with_items: "{{ pools }}"
+
+- name: create pool mount points
+  file:
+    path: "{{ item.local_dir }}"
+    state: directory
+  with_items: "{{ pools }}"
+
+- name: define pools
+  command: "virsh pool-define {{ item.xml }}"
+  with_items: "{{ pools }}"
+
+- name: start pools
+  command: "virsh pool-start {{ item.name }}"
+  with_items: "{{ pools }}"
+
 - name: add VMs in the DHCP pool
   virt_net:
       name: "{{ item[0].name }}"
@@ -23,17 +48,11 @@
       xml: "<host mac='{{ item[1].mac }}' name='{{ item[1].name }}' ip='{{ item[1].ip }}'/>"
   with_nested:
     - "{{ nets }}"
-    - "{{ vmsL1 }}"
+    - "{{ vms_nested }}"
 
 - name: create VMs disk
-  command: "qemu-img create -f qcow2 -F qcow2 -b {{ base_disk_image  }} {{ item.disk }}"
+  command: "qemu-img create -f qcow2 -F qcow2 -b {{ item.disk_base  }} {{ item.disk }}"
   with_items: "{{ vms }}"
-
-- name: start networks
-  virt_net:
-      name: "{{ item.name }}"
-      state: active
-  with_items: "{{ nets }}"
 
 - name: define VMs
   virt:
