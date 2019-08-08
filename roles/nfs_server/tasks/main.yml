@@ -1,0 +1,17 @@
+---
+
+- import_tasks: prerequisites.yml
+  tags:
+      - always
+
+- import_tasks: cleanup.yml
+  tags:
+      - never
+      - nfs
+      - cleanup
+
+- import_tasks: setup.yml
+  tags:
+      - never
+      - nfs
+      - setup

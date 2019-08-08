@@ -1,0 +1,16 @@
+---
+
+- name: cleanup exports
+  file:
+      path: '/etc/exports.d/{{ item.name }}.exports'
+      state: absent
+  with_items: "{{ nfs }}"
+
+- name: restart nfs services
+  service:
+      name: "{{ item }}"
+      state: restarted
+  with_items:
+    - rpcbind
+    - nfs-server
+

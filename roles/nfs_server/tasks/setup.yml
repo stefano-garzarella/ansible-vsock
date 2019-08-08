@@ -1,0 +1,19 @@
+---
+
+- name: setup exports
+  template:
+      src: exports.j2
+      dest: '/etc/exports.d/{{ item.name }}.exports'
+      owner: root
+      group: root
+      mode: 0644
+  with_items: "{{ nfs }}"
+
+- name: restart nfs services
+  service:
+      name: "{{ item }}"
+      state: restarted
+  with_items:
+    - rpcbind
+    - nfs-server
+
