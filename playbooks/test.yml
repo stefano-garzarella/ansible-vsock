@@ -2,5 +2,16 @@
 - hosts: localhost
   become: yes
   roles:
-      - nfs_server
+      - nfs_server_setup
       - vm_setup
+
+- hosts: localhost
+  tasks:
+      - pause:
+          prompt: "Enter to pass next phase"
+
+- hosts: localhost
+  become: yes
+  roles:
+      - vm_cleanup
+      - nfs_server_cleanup
