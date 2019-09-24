@@ -1,4 +1,13 @@
 ---
+- name: Start libvirtd service
+  service:
+    name: libvirtd
+    state: started
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
 - copy:
     src: vsockbridge.sh
     dest: /tmp/vsockbridge.sh

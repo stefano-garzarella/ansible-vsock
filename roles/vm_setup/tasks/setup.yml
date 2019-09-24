@@ -1,5 +1,14 @@
 ---
 
+- name: Start libvirtd service
+  service:
+    name: libvirtd
+    state: started
+
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
 - name: define networks
   virt_net:
       name: "{{ item.name }}"
