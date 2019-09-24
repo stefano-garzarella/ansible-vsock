@@ -1,2 +1,2 @@
-vsockvm0
-vsockvm1
+vsockvm0 ansible_user=root
+vsockvm1 ansible_user=root
