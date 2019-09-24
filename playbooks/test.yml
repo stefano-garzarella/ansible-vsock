@@ -25,7 +25,7 @@
   user: stefano
   become: yes
   pre_tasks:
-      - name: Wait for vsockvm0 to become reachable
+      - name: Wait for vsockvm1 to become reachable
         wait_for_connection:
 
       - name: Gather facts for first time
