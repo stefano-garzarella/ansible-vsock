@@ -1,4 +1,7 @@
-<domain type='kvm'>
+<domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
+  <qemu:commandline>
+    <qemu:arg value='-s'/>
+  </qemu:commandline>
   <name>{{ item.name }}</name>
   <memory unit='GiB'>8</memory>
   <currentMemory unit='GiB'>8</currentMemory>
