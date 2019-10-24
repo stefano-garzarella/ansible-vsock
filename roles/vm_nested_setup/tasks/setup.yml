@@ -4,6 +4,11 @@
     name: libvirtd
     state: started
 
+- name: Stop firewalld service
+  service:
+    name: firewalld
+    state: stopped
+
 - name: Disable SELinux
   selinux:
     state: disabled
