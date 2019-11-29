@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  become: yes
+  roles:
+      - nfs_server_setup
+      - vm_cleanup
+      - vm_setup
+  vars:
+      vms:
+        - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, disk_base: /tmp/vsockvmimages/f30-demo.qcow2, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32", if: vsocknet0, gdb: 12333}
+        - {name: vsockvm1, cid: 4, disk: /tmp/vsockvm1.img, disk_base: /tmp/vsockvmimages/f30-demo.qcow2, ip: 192.168.133.3, mac: "FC:C2:33:00:33:33", if: vsocknet0, gdb: 12344}
+      nested_vms:
+
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  pre_tasks:
+      - name: Wait for vsockvm0 to become reachable
+        wait_for_connection:
+
+      - name: Gather facts for first time
+        setup:
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  pre_tasks:
+      - name: Wait for vsockvm1 to become reachable
+        wait_for_connection:
+
+      - name: Gather facts for first time
+        setup:
+
+- hosts: localhost
+  tasks:
+      - pause:
+          prompt: "Enter to pass next phase"
+
+- hosts: localhost
+  become: yes
+  roles:
+      - vm_cleanup
+      - nfs_server_cleanup
