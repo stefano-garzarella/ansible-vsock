@@ -1,6 +1,7 @@
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <qemu:commandline>
-    <qemu:arg value='-s'/>
+    <qemu:arg value='-gdb'/>
+    <qemu:arg value='tcp::{{ item.gdb }}'/>
   </qemu:commandline>
   <name>{{ item.name }}</name>
   <memory unit='GiB'>1</memory>
