@@ -8,7 +8,6 @@
 
 - hosts: vsockvm0
   gather_facts: no
-  user: stefano
   become: yes
   pre_tasks:
       - name: Wait for vsockvm0 to become reachable
@@ -22,7 +21,6 @@
 
 - hosts: vsockvm1
   gather_facts: no
-  user: stefano
   become: yes
   pre_tasks:
       - name: Wait for vsockvm1 to become reachable
