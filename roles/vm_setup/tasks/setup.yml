@@ -51,6 +51,7 @@
     - "{{ vms }}"
 
 - name: add nested VMs in the DHCP pool
+  when: (nested_vms is defined) and (nested_vms != None)
   virt_net:
       name: "{{ item[0].name }}"
       command: modify
