@@ -42,7 +42,7 @@
   with_items: "{{ pools }}"
 
 - name: create VMs disk
-  command: "qemu-img create -f qcow2 -F qcow2 -b {{ item.disk_base  }} {{ item.disk }}"
+  command: "qemu-img create -f qcow2 -F qcow2 -b {{ l1_disk_base  }} {{ item.disk }}"
   with_items: "{{ l1_vms }}"
 
 - name: define VMs

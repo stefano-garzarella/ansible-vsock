@@ -5,3 +5,6 @@ l0_nets:
 pools:
     - {name: vsockpool0, xml: "/tmp/vsockpool0.xml", host: 192.168.133.1, remote_dir: "/home/stefano/works/virt/images", local_dir: "/tmp/vsockvmimages"}
 
+l0_disk_base: "/tmp/vsockvmimages/f30-demo.qcow2"
+
+l1_disk_base: "/tmp/vsockvmimages/f30-demo.qcow2"

@@ -10,3 +10,7 @@ l0_nets:
 l1_bridges:
 
 pools:
+
+l0_disk_base:
+
+l1_disk_base:
