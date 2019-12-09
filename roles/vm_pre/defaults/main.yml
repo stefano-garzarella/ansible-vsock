@@ -2,16 +2,11 @@
 vm_loaded: 1
 
 vms:
-    - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, disk_base: /tmp/vsockvmimages/f30-demo.qcow2, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32", if: vsocknet0, gdb: 1234}
 
 nested_vms:
-    - {name: vsockvm1, cid: 4, disk: /tmp/vsockvm1.img, disk_base: /tmp/vsockvmimages/f30-demo.qcow2, ip: 192.168.133.3, mac: "FC:C2:33:00:33:33", if: vsockbr0, gdb: 1234}
 
 nets:
-    - {name: vsocknet0, ip: 192.168.133.1, netmask: 255.255.255.0, dhcp_start: 192.168.133.2, dhcp_end: 192.168.133.254}
 
 bridges:
-    - {name: vsockbr0, if: ens3}
 
 pools:
-    - {name: vsockpool0, xml: "/tmp/vsockpool0.xml", host: 192.168.133.1, remote_dir: "/home/stefano/works/virt/images", local_dir: "/tmp/vsockvmimages"}

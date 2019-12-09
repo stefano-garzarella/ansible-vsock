@@ -1,0 +1,7 @@
+---
+nets:
+    - {name: vsocknet0, ip: 192.168.133.1, netmask: 255.255.255.0, dhcp_start: 192.168.133.2, dhcp_end: 192.168.133.254}
+
+pools:
+    - {name: vsockpool0, xml: "/tmp/vsockpool0.xml", host: 192.168.133.1, remote_dir: "/home/stefano/works/virt/images", local_dir: "/tmp/vsockvmimages"}
+

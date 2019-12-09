@@ -1,16 +1,13 @@
 ---
 - hosts: localhost
   become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/sibling-vms-vars.yml
   roles:
       - nfs_server_setup
       - vm_cleanup
       - vm_setup
-  vars:
-      vms:
-        - {name: vsockvm0, cid: 3, disk: /tmp/vsockvm0.img, disk_base: /tmp/vsockvmimages/f30-demo.qcow2, ip: 192.168.133.2, mac: "FC:C2:33:00:33:32", if: vsocknet0, gdb: 12333}
-        - {name: vsockvm1, cid: 4, disk: /tmp/vsockvm1.img, disk_base: /tmp/vsockvmimages/f30-demo.qcow2, ip: 192.168.133.3, mac: "FC:C2:33:00:33:33", if: vsocknet0, gdb: 12344}
-      nested_vms:
-
 
 - hosts: vsockvm0
   gather_facts: no
@@ -39,6 +36,9 @@
 
 - hosts: localhost
   become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/sibling-vms-vars.yml
   roles:
       - vm_cleanup
       - nfs_server_cleanup
