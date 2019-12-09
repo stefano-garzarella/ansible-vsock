@@ -17,3 +17,20 @@
     - rpcbind
     - nfs-server
 
+- firewalld:
+    service: nfs3
+    zone: libvirt
+    permanent: no
+    state: enabled
+
+- firewalld:
+    service: mountd
+    zone: libvirt
+    permanent: no
+    state: enabled
+
+- firewalld:
+    service: rpc-bind
+    zone: libvirt
+    permanent: no
+    state: enabled
