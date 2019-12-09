@@ -20,7 +20,7 @@
 
 - name: setup bridges
   command: "bash -x /tmp/vsockbridge.sh {{ item.name }} {{ item.if }}"
-  with_items: "{{ bridges }}"
+  with_items: "{{ l1_bridges }}"
 
 - template:
     src:  pool.xml.j2
@@ -43,16 +43,16 @@
 
 - name: create VMs disk
   command: "qemu-img create -f qcow2 -F qcow2 -b {{ item.disk_base  }} {{ item.disk }}"
-  with_items: "{{ nested_vms }}"
+  with_items: "{{ l1_vms }}"
 
 - name: define VMs
   virt:
       command: define
       xml: "{{ lookup('template', 'vm-nested.xml.j2') }}"
-  with_items: "{{ nested_vms }}"
+  with_items: "{{ l1_vms }}"
 
 - name: start VMs
   virt:
       name: "{{ item.name }}"
       state: running
-  with_items: "{{ nested_vms }}"
+  with_items: "{{ l1_vms }}"

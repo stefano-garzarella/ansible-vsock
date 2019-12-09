@@ -1,5 +1,5 @@
 ---
-nets:
+l0_nets:
     - {name: vsocknet0, ip: 192.168.133.1, netmask: 255.255.255.0, dhcp_start: 192.168.133.2, dhcp_end: 192.168.133.254}
 
 pools:

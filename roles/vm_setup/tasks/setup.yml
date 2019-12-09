@@ -14,13 +14,13 @@
       name: "{{ item.name }}"
       command: define
       xml: "{{ lookup('template', 'net.xml.j2') }}"
-  with_items: "{{ nets }}"
+  with_items: "{{ l0_nets }}"
 
 - name: start networks
   virt_net:
       name: "{{ item.name }}"
       state: active
-  with_items: "{{ nets }}"
+  with_items: "{{ l0_nets }}"
 
 - template:
     src:  pool.xml.j2
@@ -47,31 +47,31 @@
       command: modify
       xml: "<host mac='{{ item[1].mac }}' name='{{ item[1].name }}' ip='{{ item[1].ip }}'/>"
   with_nested:
-    - "{{ nets }}"
-    - "{{ vms }}"
+    - "{{ l0_nets }}"
+    - "{{ l0_vms }}"
 
 - name: add nested VMs in the DHCP pool
-  when: (nested_vms is defined) and (nested_vms != None)
+  when: (l1_vms is defined) and (l1_vms != None)
   virt_net:
       name: "{{ item[0].name }}"
       command: modify
       xml: "<host mac='{{ item[1].mac }}' name='{{ item[1].name }}' ip='{{ item[1].ip }}'/>"
   with_nested:
-    - "{{ nets }}"
-    - "{{ nested_vms }}"
+    - "{{ l0_nets }}"
+    - "{{ l1_vms }}"
 
 - name: create VMs disk
   command: "qemu-img create -f qcow2 -F qcow2 -b {{ item.disk_base  }} {{ item.disk }}"
-  with_items: "{{ vms }}"
+  with_items: "{{ l0_vms }}"
 
 - name: define VMs
   virt:
       command: define
       xml: "{{ lookup('template', 'vm.xml.j2') }}"
-  with_items: "{{ vms }}"
+  with_items: "{{ l0_vms }}"
 
 - name: start VMs
   virt:
       name: "{{ item.name }}"
       state: running
-  with_items: "{{ vms }}"
+  with_items: "{{ l0_vms }}"

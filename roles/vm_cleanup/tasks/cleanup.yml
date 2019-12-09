@@ -9,14 +9,14 @@
   virt:
       name: "{{ item.name }}"
       state: destroyed
-  with_items: "{{ vms }}"
+  with_items: "{{ l0_vms }}"
   when: item.name in defined_vms.list_vms
 
 - name: undefine VMs
   virt:
       name: "{{ item.name }}"
       command: undefine
-  with_items: "{{ vms }}"
+  with_items: "{{ l0_vms }}"
   when: item.name in defined_vms.list_vms
 
 - name: stop pools
@@ -33,4 +33,4 @@
   virt_net:
       name: "{{ item.name }}"
       state: absent
-  with_items: "{{ nets }}"
+  with_items: "{{ l0_nets }}"
