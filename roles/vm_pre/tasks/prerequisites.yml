@@ -9,5 +9,4 @@
     - libguestfs-tools
     - libvirt-nss
     - libvirt
-    - python2-lxml
     - nfs-utils
