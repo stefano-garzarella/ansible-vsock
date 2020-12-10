@@ -7,7 +7,8 @@
 
 - name: Disable SELinux
   selinux:
-    state: disabled
+    policy: targeted
+    state: permissive
 
 - name: define networks
   virt_net:
