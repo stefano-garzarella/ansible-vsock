@@ -6,12 +6,6 @@
     mode: 0777
     force: no
 
-- copy:
-    src: vsock_diag_test
-    dest: /tmp/vsock_diag_test
-    mode: 0777
-    force: no
-
 - name: Start vsock_test server
   when: vsock_test_server | default(false)
   shell: "/tmp/vsock_test --mode=server --control-port={{ vsock_test_server.port }} --peer-cid={{ vsock_test_server.cid  }} {{ vsock_test_server.param | default('') }}"
