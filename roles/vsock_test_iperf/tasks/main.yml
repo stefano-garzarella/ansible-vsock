@@ -1,0 +1,24 @@
+---
+
+- copy:
+    src: iperf3
+    dest: /tmp/iperf3
+    mode: 0777
+    force: no
+
+- name: Start iperf3 server
+  when: iperf_server | default(false)
+  shell: "/tmp/iperf3 --vsock -s {{ iperf_server.param | default('') }}"
+  register: iperf_server_ret
+  async: 100
+  poll: 0
+
+- name: Start iperf3 client
+  when: iperf_client | default(false)
+  shell: "/tmp/iperf3 --vsock -c {{ iperf_client.cid }} {{ iperf_client.param | default('') }}"
+  register: iperf_client_ret
+
+- name: Display iperf3 results
+  when: iperf_client_ret.stdout_lines | default(false)
+  debug:
+    var: iperf_client_ret.stdout_lines
