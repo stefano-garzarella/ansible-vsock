@@ -1,9 +1,11 @@
 ---
 - hosts: localhost
+  become: yes
+  tags:
+      - setup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
-  become: yes
   roles:
       - nfs_server_setup
       - vm_pre
@@ -13,13 +15,14 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - setup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
   pre_tasks:
       - name: Wait for vsockvm0 to become reachable
         wait_for_connection:
-
       - name: Gather facts for first time
         setup:
   roles:
@@ -28,23 +31,28 @@
 - hosts: vsockvm1
   gather_facts: no
   become: yes
+  tags:
+      - setup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
   pre_tasks:
       - name: Wait for vsockvm1 to become reachable
         wait_for_connection:
-
       - name: Gather facts for first time
         setup:
 
 - hosts: localhost
+  tags:
+      - pause
   tasks:
       - pause:
           prompt: "Enter to pass next phase"
 
 - hosts: localhost
   become: yes
+  tags:
+      - cleanup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
