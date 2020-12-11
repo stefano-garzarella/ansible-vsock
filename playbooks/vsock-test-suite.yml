@@ -60,6 +60,9 @@
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run test servers in the host"
   roles:
       - role: vsock_test_kernel
         vars:
@@ -92,6 +95,9 @@
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run test servers in the guest"
   roles:
       - role: vsock_test_kernel
         vars:
