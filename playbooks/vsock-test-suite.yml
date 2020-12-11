@@ -1,0 +1,104 @@
+---
+- hosts: localhost
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  become: yes
+  roles:
+      - nfs_server_setup
+      - vm_cleanup
+      - vm_setup
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - name: Wait for vsockvm0 to become reachable
+        wait_for_connection:
+      - name: Gather facts for first time
+        setup:
+      - modprobe:
+          name: vsock_loopback
+          state: present
+  roles:
+      - vm_nested_setup
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  pre_tasks:
+      - debug:
+          msg: "Run loopback tests"
+  roles:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client: { cid: "1", param: "-t 5" }
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - name: Wait for vsockvm1 to become reachable
+        wait_for_connection:
+      - name: Gather facts for first time
+        setup:
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  roles:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client:
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  roles:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "2", param: "-t 5"}
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  roles:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client:
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "{{ l1_vms[0].cid }}", param: "-t 5"}
+
+- hosts: localhost
+  tasks:
+      - pause:
+          prompt: "Enter to pass to cleanup phase"
+
+- hosts: localhost
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - vm_cleanup
+      - nfs_server_cleanup
