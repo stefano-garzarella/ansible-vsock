@@ -33,6 +33,11 @@
       - debug:
           msg: "Run loopback tests"
   roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server: { port: "23456", cid: "1" }
+          # skip connect test on localhost to avoid "expected 1 sockets, found 2" error
+          vsock_diag_test_client: { host: "127.0.0.1", port: "23456", cid: "1", param: "--skip 2" }
       - role: vsock_test_kernel
         vars:
           vsock_test_server: { port: "12345", cid: "1" }
@@ -123,6 +128,63 @@
         vars:
           iperf_server:
           iperf_client: { cid: "{{ l1_vms[0].cid }}", param: "-t 5"}
+
+#
+# vsock_diag_test doesn't work well with other vsock sockets around, run it alone
+#
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run vsock_diag_test server in the host"
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server: { port: "23456", cid: "{{ l1_vms[0].cid }}" }
+          vsock_diag_test_client:
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server:
+          vsock_diag_test_client: { host: "{{ l0_vms[0].ip }}", port: "23456", cid: "2" }
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run vsock_diag_test server in the guest"
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server: { port: "23456", cid: "{{ 2 }}" }
+          vsock_diag_test_client:
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server:
+          vsock_diag_test_client: { host: "{{ l1_vms[0].ip }}", port: "23456", cid: "{{ l1_vms[0].cid }}" }
 
 - hosts: localhost
   tasks:
