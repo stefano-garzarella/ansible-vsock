@@ -4,7 +4,5 @@
     name: nfs_server_pre
     public: yes
   when: nfs_server_loaded is undefined
-  tags:
-    - always
 
 - import_tasks: cleanup.yml
