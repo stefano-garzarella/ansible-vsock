@@ -1,9 +1,11 @@
 ---
 - hosts: localhost
+  become: yes
+  tags:
+      - setup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
-  become: yes
   roles:
       - nfs_server_setup
       - vm_cleanup
@@ -12,6 +14,8 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - setup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -29,6 +33,8 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - test
   pre_tasks:
       - debug:
           msg: "Run loopback tests"
@@ -50,6 +56,8 @@
 - hosts: vsockvm1
   gather_facts: no
   become: yes
+  tags:
+      - setup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -62,6 +70,8 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -81,6 +91,8 @@
 - hosts: vsockvm1
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -97,6 +109,8 @@
 - hosts: vsockvm1
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -116,6 +130,8 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -135,6 +151,8 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -150,6 +168,8 @@
 - hosts: vsockvm1
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -162,6 +182,8 @@
 - hosts: vsockvm1
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -177,6 +199,8 @@
 - hosts: vsockvm0
   gather_facts: no
   become: yes
+  tags:
+      - test
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
@@ -187,12 +211,16 @@
           vsock_diag_test_client: { host: "{{ l1_vms[0].ip }}", port: "23456", cid: "{{ l1_vms[0].cid }}" }
 
 - hosts: localhost
+  tags:
+      - pause
   tasks:
       - pause:
           prompt: "Enter to pass to cleanup phase"
 
 - hosts: localhost
   become: yes
+  tags:
+      - cleanup
   vars_files:
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
