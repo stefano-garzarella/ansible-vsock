@@ -2,4 +2,3 @@
 nfs_server_loaded: 1
 
 nfs:
-    - {name: 32-vsocknfs, exports: {"/home/stefano/works/virt/images 192.168.133.0/24(rw,no_root_squash) localhost(rw,no_root_squash)"}}

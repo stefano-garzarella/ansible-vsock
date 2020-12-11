@@ -1,4 +1,7 @@
 ---
+nfs:
+    - {name: 32-vsocknfs, exports: {"/home/stefano/works/virt/images 192.168.133.0/24(rw,no_root_squash) localhost(rw,no_root_squash)"}}
+
 l0_nets:
     - {name: vsocknet0, ip: 192.168.133.1, netmask: 255.255.255.0, dhcp_start: 192.168.133.2, dhcp_end: 192.168.133.254}
 

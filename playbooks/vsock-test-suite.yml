@@ -8,6 +8,7 @@
       - vars/nested-vm-vars.yml
   roles:
       - nfs_server_setup
+      - vm_pre
       - vm_cleanup
       - vm_setup
 
