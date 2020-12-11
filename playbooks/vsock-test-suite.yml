@@ -216,7 +216,7 @@
       - pause
   tasks:
       - pause:
-          prompt: "Enter to pass to cleanup phase"
+          prompt: "Press enter to proceed to the cleaning phase"
 
 - hosts: localhost
   become: yes

@@ -39,7 +39,7 @@
       - pause
   tasks:
       - pause:
-          prompt: "Enter to pass next phase"
+          prompt: "Press enter to proceed to the cleaning phase"
 
 - hosts: localhost
   become: yes
