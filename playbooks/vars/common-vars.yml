@@ -1,13 +1,26 @@
 ---
+
+## Variables to customize ##
+
+nfs_server_path: "/home/stefano/works/virt/images"
+
+nfs_mount_point: "/tmp/vsockvmimages"
+
 nfs:
     - {name: 32-vsocknfs, exports: {"/home/stefano/works/virt/images 192.168.133.0/24(rw,no_root_squash) localhost(rw,no_root_squash)"}}
+
+l0_disk_base: "{{ nfs_mount_point }}/f32-demo.qcow2"
+
+l1_disk_base: "{{ nfs_mount_point }}/f32-demo.qcow2"
+
+
+
+
+## Variables ready to use ##
 
 l0_nets:
     - {name: vsocknet0, ip: 192.168.133.1, netmask: 255.255.255.0, dhcp_start: 192.168.133.2, dhcp_end: 192.168.133.254}
 
 pools:
-    - {name: vsockpool0, xml: "/tmp/vsockpool0.xml", host: 192.168.133.1, remote_dir: "/home/stefano/works/virt/images", local_dir: "/tmp/vsockvmimages"}
+    - {name: vsockpool0, xml: "/tmp/vsockpool0.xml", host: 192.168.133.1, remote_dir: "{{ nfs_server_path }}", local_dir: "{{ nfs_mount_point }}"}
 
-l0_disk_base: "/tmp/vsockvmimages/f32-demo.qcow2"
-
-l1_disk_base: "/tmp/vsockvmimages/f32-demo.qcow2"
