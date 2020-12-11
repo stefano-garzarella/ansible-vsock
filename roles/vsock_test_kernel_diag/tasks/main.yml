@@ -1,0 +1,24 @@
+---
+
+- copy:
+    src: vsock_diag_test
+    dest: /tmp/vsock_diag_test
+    mode: 0777
+    force: no
+
+- name: Start vsock_diag_test server
+  when: vsock_diag_test_server | default(false)
+  shell: "/tmp/vsock_diag_test --mode=server --control-port={{ vsock_diag_test_server.port }} --peer-cid={{ vsock_diag_test_server.cid  }} {{ vsock_diag_test_server.param | default('') }}"
+  register: vsock_diag_test_server_ret
+  async: 100
+  poll: 0
+
+- name: Start vsock_diag_test client
+  when: vsock_diag_test_client | default(false)
+  shell: "/tmp/vsock_diag_test --mode=client --control-host={{ vsock_diag_test_client.host }} --control-port={{ vsock_diag_test_client.port }} --peer-cid={{ vsock_diag_test_client.cid  }} {{ vsock_diag_test_client.param | default('') }}"
+  register: vsock_diag_test_client_ret
+
+- name: Display vsock_diag_test results
+  when: vsock_diag_test_client_ret.stdout_lines | default(false)
+  debug:
+    var: vsock_diag_test_client_ret.stdout_lines
