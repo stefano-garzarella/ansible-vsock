@@ -67,6 +67,14 @@
         wait_for_connection:
       - name: Gather facts for first time
         setup:
+      - name: Stop firewalld service
+        service:
+          name: firewalld
+          state: stopped
+      - name: Disable SELinux
+        selinux:
+          policy: targeted
+          state: permissive
 
 - hosts: vsockvm0
   gather_facts: no
