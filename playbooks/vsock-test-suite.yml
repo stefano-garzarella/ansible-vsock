@@ -90,7 +90,8 @@
   roles:
       - role: vsock_test_kernel
         vars:
-          vsock_test_server: { port: "12345", cid: "{{ l1_vms[0].cid }}" }
+          # QEMU doesn't support seqpacket for now, let's skip 6 and 7
+          vsock_test_server: { port: "12345", cid: "{{ l1_vms[0].cid }}", param: "--skip 6 --skip 7" }
           vsock_test_client:
       - role: vsock_test_iperf
         vars:
@@ -109,7 +110,8 @@
       - role: vsock_test_kernel
         vars:
           vsock_test_server:
-          vsock_test_client: { host: "{{ l0_vms[0].ip }}", port: "12345", cid: "2" }
+          # QEMU doesn't support seqpacket for now, let's skip 6 and 7
+          vsock_test_client: { host: "{{ l0_vms[0].ip }}", port: "12345", cid: "2", param: "--skip 6 --skip 7" }
       - role: vsock_test_iperf
         vars:
           iperf_server:
@@ -129,7 +131,8 @@
   roles:
       - role: vsock_test_kernel
         vars:
-          vsock_test_server: { port: "12345", cid: "{{ 2 }}" }
+          # QEMU doesn't support seqpacket for now, let's skip 6 and 7
+          vsock_test_server: { port: "12345", cid: "{{ 2 }}", param: "--skip 6 --skip 7" }
           vsock_test_client:
       - role: vsock_test_iperf
         vars:
@@ -148,7 +151,8 @@
       - role: vsock_test_kernel
         vars:
           vsock_test_server:
-          vsock_test_client: { host: "{{ l1_vms[0].ip }}", port: "12345", cid: "{{ l1_vms[0].cid }}" }
+          # QEMU doesn't support seqpacket for now, let's skip 6 and 7
+          vsock_test_client: { host: "{{ l1_vms[0].ip }}", port: "12345", cid: "{{ l1_vms[0].cid }}", param: "--skip 6 --skip 7" }
       - role: vsock_test_iperf
         vars:
           iperf_server:
