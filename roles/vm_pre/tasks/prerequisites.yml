@@ -10,3 +10,4 @@
     - libvirt-nss
     - libvirt
     - nfs-utils
+    - python-lxml
