@@ -10,6 +10,9 @@
     policy: targeted
     state: permissive
 
+- name: Setup nsswitch.conf for libvirt
+  shell: 'grep libvirt /etc/nsswitch.conf || sed -i s/"files myhostname"/"files myhostname libvirt libvirt_guest"/g /etc/nsswitch.conf'
+
 - name: define networks
   virt_net:
       name: "{{ item.name }}"
