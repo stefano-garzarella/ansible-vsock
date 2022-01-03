@@ -17,19 +17,25 @@
     - rpcbind
     - nfs-server
 
-- firewalld:
+- name: open nfs3 ports
+  ignore_errors: yes
+  firewalld:
     service: nfs3
     zone: libvirt
     permanent: no
     state: enabled
 
-- firewalld:
+- name: open mountd ports
+  ignore_errors: yes
+  firewalld:
     service: mountd
     zone: libvirt
     permanent: no
     state: enabled
 
-- firewalld:
+- name: open rpc-bind ports
+  ignore_errors: yes
+  firewalld:
     service: rpc-bind
     zone: libvirt
     permanent: no
