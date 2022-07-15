@@ -1,0 +1,238 @@
+---
+- hosts: localhost
+  become: yes
+  tags:
+      - setup
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - nfs_server_setup
+      - vm_pre
+      - vm_cleanup
+      - vm_setup
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - setup
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - name: Wait for vsockvm0 to become reachable
+        wait_for_connection:
+      - name: Gather facts for first time
+        setup:
+      - modprobe:
+          name: vsock_loopback
+          state: present
+  roles:
+      - vm_nested_setup
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  pre_tasks:
+      - debug:
+          msg: "Run loopback tests"
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server: { port: "23456", cid: "1" }
+          # skip connect test on localhost to avoid "expected 1 sockets, found 2" error
+          vsock_diag_test_client: { host: "127.0.0.1", port: "23456", cid: "1", param: "--skip 2" }
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server: { port: "12345", cid: "1" }
+          vsock_test_client: { host: "127.0.0.1", port: "12345", cid: "1", param: "--skip 6 --skip 7 --skip 8 --skip 9" }
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client: { cid: "1", param: "-t 5" }
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  tags:
+      - setup
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - name: Wait for vsockvm1 to become reachable
+        wait_for_connection:
+      - name: Gather facts for first time
+        setup:
+      - name: Stop firewalld service
+        service:
+          name: firewalld
+          state: stopped
+      - name: Disable SELinux
+        selinux:
+          policy: targeted
+          state: permissive
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run test servers in the host"
+  roles:
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server: { port: "12345", cid: "{{ l1_vms[0].cid }}" }
+          vsock_test_client:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client:
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server:
+          vsock_test_client: { host: "{{ l0_vms[0].ip }}", port: "12345", cid: "2", param: "--skip 6 --skip 7 --skip 8 --skip 9" }
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "2", param: "-t 5"}
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run test servers in the guest"
+  roles:
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server: { port: "12345", cid: "{{ 2 }}" }
+          vsock_test_client:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client:
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server:
+          vsock_test_client: { host: "{{ l1_vms[0].ip }}", port: "12345", cid: "{{ l1_vms[0].cid }}", param: "--skip 6 --skip 7 --skip 8 --skip 9" }
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "{{ l1_vms[0].cid }}", param: "-t 5"}
+
+#
+# vsock_diag_test doesn't work well with other vsock sockets around, run it alone
+#
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run vsock_diag_test server in the host"
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server: { port: "23456", cid: "{{ l1_vms[0].cid }}" }
+          vsock_diag_test_client:
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server:
+          vsock_diag_test_client: { host: "{{ l0_vms[0].ip }}", port: "23456", cid: "2" }
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run vsock_diag_test server in the guest"
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server: { port: "23456", cid: "{{ 2 }}" }
+          vsock_diag_test_client:
+
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel_diag
+        vars:
+          vsock_diag_test_server:
+          vsock_diag_test_client: { host: "{{ l1_vms[0].ip }}", port: "23456", cid: "{{ l1_vms[0].cid }}" }
+
+- hosts: localhost
+  tags:
+      - pause
+  tasks:
+      - pause:
+          prompt: "Press enter to proceed to the cleaning phase"
+
+- hosts: localhost
+  become: yes
+  tags:
+      - cleanup
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - vm_cleanup
+      - nfs_server_cleanup
