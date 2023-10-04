@@ -48,7 +48,7 @@
       - role: vsock_test_kernel
         vars:
           vsock_test_server: { port: "12345", cid: "1" }
-          vsock_test_client: { host: "127.0.0.1", port: "12345", cid: "1", param: "--skip 6 --skip 7 --skip 8 --skip 9" }
+          vsock_test_client: { host: "127.0.0.1", port: "12345", cid: "1", param: "--skip 6 --skip 7 --skip 8 --skip 9 --skip 10" }
       - role: vsock_test_iperf
         vars:
           iperf_server: { param: "-1" }
@@ -109,7 +109,7 @@
       - role: vsock_test_kernel
         vars:
           vsock_test_server:
-          vsock_test_client: { host: "{{ l0_vms[0].ip }}", port: "12345", cid: "2", param: "--skip 6 --skip 7 --skip 8 --skip 9" }
+          vsock_test_client: { host: "{{ l0_vms[0].ip }}", port: "12345", cid: "2", param: "--skip 6 --skip 7 --skip 8 --skip 9 --skip 10" }
       - role: vsock_test_iperf
         vars:
           iperf_server:
@@ -148,7 +148,7 @@
       - role: vsock_test_kernel
         vars:
           vsock_test_server:
-          vsock_test_client: { host: "{{ l1_vms[0].ip }}", port: "12345", cid: "{{ l1_vms[0].cid }}", param: "--skip 6 --skip 7 --skip 8 --skip 9" }
+          vsock_test_client: { host: "{{ l1_vms[0].ip }}", port: "12345", cid: "{{ l1_vms[0].cid }}", param: "--skip 6 --skip 7 --skip 8 --skip 9 --skip 10" }
       - role: vsock_test_iperf
         vars:
           iperf_server:
