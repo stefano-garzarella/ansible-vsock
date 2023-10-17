@@ -1,0 +1,24 @@
+---
+
+- copy:
+    src: vsock_perf
+    dest: /tmp/vsock_perf
+    mode: 0777
+    force: no
+
+- name: Start vsock_perf server
+  when: vsock_perf_server | default(false)
+  shell: "/tmp/vsock_perf {{ vsock_perf_server.param | default('') }}"
+  register: vsock_perf_server_ret
+  async: 100
+  poll: 0
+
+- name: Start vsock_perf client
+  when: vsock_perf_client | default(false)
+  shell: "/tmp/vsock_perf --sender {{ vsock_perf_client.cid }} {{ vsock_perf_client.param | default('') }}"
+  register: vsock_perf_client_ret
+
+- name: Display vsock_perf_client results
+  when: vsock_perf_client_ret.stdout_lines | default(false)
+  debug:
+    var: vsock_perf_client_ret.stdout_lines
