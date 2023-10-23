@@ -36,22 +36,22 @@ Run the playbook using `ansible-playbook`
 
 #### Start VMs, run tests, cleanup VMs
 ```shell
-ansible-playbook --ask-become-pass playbooks/nested-vms.yml
+ansible-playbook --ask-become-pass playbooks/vsock-test-suite.yml
 ```
 
 #### Start VMs without running tests
 ```shell
-ansible-playbook --ask-become-pass playbooks/nested-vms.yml --tags "setup"
+ansible-playbook --ask-become-pass playbooks/vsock-test-suite.yml --tags "setup"
 ```
 
 #### Run tests on VMs previously started
 ```shell
-ansible-playbook --ask-become-pass playbooks/nested-vms.yml --tags "test"
+ansible-playbook --ask-become-pass playbooks/vsock-test-suite.yml --tags "test"
 ```
 
 #### Cleanup VMs previously started
 ```shell
-ansible-playbook --ask-become-pass playbooks/nested-vms.yml --tags "cleanup"
+ansible-playbook --ask-become-pass playbooks/vsock-test-suite.yml --tags "cleanup"
 ```
 
 ### Nested VMs
