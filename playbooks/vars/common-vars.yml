@@ -9,9 +9,9 @@ nfs_mount_point: "/tmp/vsockvmimages"
 nfs:
     - {name: 32-vsocknfs, exports: {"/home/stefano/works/virt/images 192.168.133.0/24(rw,no_root_squash) localhost(rw,no_root_squash)"}}
 
-l0_disk_base: "{{ nfs_mount_point }}/f39-vm-build.qcow2"
+l0_disk_base: "{{ nfs_mount_point }}/f40-vm-build.qcow2"
 
-l1_disk_base: "{{ nfs_mount_point }}/f39-vm-build.qcow2"
+l1_disk_base: "{{ nfs_mount_point }}/f40-vm-build.qcow2"
 
 
 
