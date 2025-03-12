@@ -57,6 +57,10 @@
         vars:
           iperf_server: { param: "-1" }
           iperf_client: { cid: "1", param: "-t 5" }
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client: { cid: "1", param: "-t 5 --bidir -P 4" }
       - role: vsock_test_kernel_perf
         vars:
           vsock_perf_server: { param: "" }
@@ -112,6 +116,10 @@
         vars:
           iperf_server: { param: "-1" }
           iperf_client:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1 -p 55201" }
+          iperf_client:
       - role: vsock_test_kernel_perf
         vars:
           vsock_perf_server: { param: "--port 42424" }
@@ -142,6 +150,10 @@
         vars:
           iperf_server:
           iperf_client: { cid: "2", param: "-t 5"}
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "2", param: "-t 5 -p 55201 --bidir -P 4"}
       - role: vsock_test_kernel_perf
         vars:
           vsock_perf_server:
@@ -175,6 +187,10 @@
         vars:
           iperf_server: { param: "-1" }
           iperf_client:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1 -p 55201" }
+          iperf_client:
       - role: vsock_test_kernel_perf
         vars:
           vsock_perf_server: { param: "--port 42424" }
@@ -205,6 +221,10 @@
         vars:
           iperf_server:
           iperf_client: { cid: "{{ l1_vms[0].cid }}", param: "-t 5"}
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "{{ l1_vms[0].cid }}", param: "-t 5 -p 55201 --bidir -P 4"}
       - role: vsock_test_kernel_perf
         vars:
           vsock_perf_server:
