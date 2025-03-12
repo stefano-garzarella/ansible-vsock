@@ -16,9 +16,7 @@
     <apic/>
     <vmport state='off'/>
   </features>
-  <cpu mode='host-model' check='partial'>
-    <model fallback='allow'/>
-  </cpu>
+  <cpu mode="host-passthrough" check="none" migratable="on"/>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
     <timer name='pit' tickpolicy='delay'/>
