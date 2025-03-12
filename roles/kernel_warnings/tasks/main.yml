@@ -1,0 +1,19 @@
+---
+
+- name: Check warn_count value
+  shell: "cat /sys/kernel/warn_count"
+  register: warn_count_output
+
+- name: Capture kernel warnings if warn_count is not zero
+  shell: "dmesg --level=warn"
+  register: kernel_warnings
+  when: warn_count_output.stdout | int != 0
+
+- name: Fail if warn_count is not zero and show warnings
+  fail:
+    msg: |
+      /sys/kernel/warn_count is not zero. Value: {{ warn_count_output.stdout }}
+      Kernel warnings:
+      {{ kernel_warnings.stdout }}
+  when: warn_count_output.stdout | int != 0
+

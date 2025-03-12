@@ -299,6 +299,32 @@
           vsock_diag_test_server:
           vsock_diag_test_client: { host: "{{ l1_vms[0].ip }}", port: "23456", cid: "{{ l1_vms[0].cid }}" }
 
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: kernel_kmemleak
+      - role: kernel_warnings
+      - role: kernel_oops
+
+- hosts: vsockvm1
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: kernel_kmemleak
+      - role: kernel_warnings
+      - role: kernel_oops
+
 - hosts: localhost
   tags:
       - pause

@@ -1,0 +1,19 @@
+---
+
+- name: Check for Oops in dmesg
+  shell: "dmesg | grep -i 'Oops' | wc -l"
+  register: oops_count_output
+
+- name: Capture kernel errors if oops_count is not zero
+  shell: "dmesg --level=err+"
+  register: kernel_errors
+  when: oops_count_output.stdout | int != 0
+
+- name: Fail if oops_count is not zero and show warnings
+  fail:
+    msg: |
+      'Oops' found in dmesg. Value: {{ oops_count_output.stdout }}
+      Kernel errors:
+      {{ kernel_errors.stdout }}
+  when: oops_count_output.stdout | int != 0
+

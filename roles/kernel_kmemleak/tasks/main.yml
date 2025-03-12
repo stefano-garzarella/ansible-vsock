@@ -1,0 +1,26 @@
+---
+
+- name: Wait for a grace period (5 secs) before start kmemleak scan
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Start kmemleak scan
+  shell: "echo scan > /sys/kernel/debug/kmemleak"
+
+- name: Wait for a second grace period (5 secs) before start kmemleak scan again
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Start kmemleak scan
+  shell: "echo scan > /sys/kernel/debug/kmemleak"
+
+- name: Get kmemleak dump
+  shell: "cat /sys/kernel/debug/kmemleak"
+  register: kmemleak_dump
+
+- name: Fail if the kmemleak dump is not empty
+  fail:
+    msg: |
+      /sys/kernel/debug/kmemleak contains data:
+      {{ kmemleak_dump.stdout }}
+  when: kmemleak_dump.stdout | length > 0
