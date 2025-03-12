@@ -10,7 +10,7 @@
   when: iperf_server | default(false)
   shell: "/tmp/iperf3 --vsock -s {{ iperf_server.param | default('') }}"
   register: iperf_server_ret
-  async: 100
+  async: 200
   poll: 0
 
 - name: Start iperf3 client

@@ -10,7 +10,7 @@
   when: vsock_perf_server | default(false)
   shell: "/tmp/vsock_perf {{ vsock_perf_server.param | default('') }}"
   register: vsock_perf_server_ret
-  async: 100
+  async: 200
   poll: 0
 
 - name: Start vsock_perf client
