@@ -1,2 +1,5 @@
+[local]
+localhost ansible_connection=ssh
+
 vsockvm0 ansible_user=root
 vsockvm1 ansible_user=root
