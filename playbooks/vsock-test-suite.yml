@@ -70,6 +70,72 @@
           vsock_perf_server: { param: "--zerocopy" }
           vsock_perf_client: { cid: "1", param: "--zerocopy --bytes 10G" }
 
+- hosts: vsockvm0
+  gather_facts: no
+  become: yes
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  pre_tasks:
+      - debug:
+          msg: "Run some tests between real host and vm0 to check backward compatibility"
+  roles:
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server: { port: "12345", cid: "2" }
+          vsock_test_client:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1" }
+          iperf_client:
+      - role: vsock_test_iperf
+        vars:
+          iperf_server: { param: "-1 -p 55201" }
+          iperf_client:
+      - role: vsock_test_kernel_perf
+        vars:
+          vsock_perf_server: { param: "--port 42424" }
+          vsock_perf_client:
+      - role: vsock_test_kernel_perf
+        vars:
+          vsock_perf_server: { param: "--port 53535 --zerocopy" }
+          vsock_perf_client:
+
+- hosts: localhost
+  gather_facts: no
+  tags:
+      - test
+  vars_files:
+      - vars/common-vars.yml
+      - vars/nested-vm-vars.yml
+  roles:
+      - role: vsock_test_kernel
+        vars:
+          vsock_test_server:
+          vsock_test_client:
+            host: "{{ l0_vms[0].ip }}"
+            port: "12345"
+            cid: "{{ l0_vms[0].cid }}"
+            param: "--pick 0 --pick 1 --pick 2 --pick 3 --pick 4 --pick 5 --pick 6 --pick 7 --pick 8 --pick 9"
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "{{ l0_vms[0].cid }}", param: "-t 5"}
+      - role: vsock_test_iperf
+        vars:
+          iperf_server:
+          iperf_client: { cid: "{{ l0_vms[0].cid }}", param: "-t 5 -p 55201 --bidir -P 4"}
+      - role: vsock_test_kernel_perf
+        vars:
+          vsock_perf_server:
+          vsock_perf_client: { cid: "{{ l0_vms[0].cid }}", param: "--port 42424 --bytes 1G" }
+      - role: vsock_test_kernel_perf
+        vars:
+          vsock_perf_server:
+          vsock_perf_client: { cid: "{{ l0_vms[0].cid }}", param: "--port 53535 --zerocopy --bytes 1G" }
+
 - hosts: vsockvm1
   gather_facts: no
   become: yes
