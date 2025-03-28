@@ -167,6 +167,10 @@
       - vars/common-vars.yml
       - vars/nested-vm-vars.yml
   pre_tasks:
+      - name: Unload virtio-vsock driver, so we can run next tests without G2H driver in l0
+        modprobe:
+            name: vmw_vsock_virtio_transport
+            state: absent
       - debug:
           msg: "Run test servers in the host"
   roles:
