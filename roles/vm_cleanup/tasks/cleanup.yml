@@ -19,6 +19,10 @@
   with_items: "{{ l0_vms }}"
   when: item.name in defined_vms.list_vms
 
+- name: Pause for 5 seconds
+  ansible.builtin.pause:
+    seconds: 5
+
 - name: stop pools
   command: "virsh pool-destroy {{ item.name }}"
   with_items: "{{ pools }}"
