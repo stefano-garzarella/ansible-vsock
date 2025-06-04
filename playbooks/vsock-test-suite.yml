@@ -25,6 +25,10 @@
         wait_for_connection:
       - name: Gather facts for first time
         setup:
+      - name: Stop sshd-vsock to avoid issue with vsock_diag_test
+        service:
+          name: sshd-vsock.socket
+          state: stopped
       - modprobe:
           name: vsock_loopback
           state: present
@@ -149,6 +153,10 @@
         wait_for_connection:
       - name: Gather facts for first time
         setup:
+      - name: Stop sshd-vsock to avoid issue with vsock_diag_test
+        service:
+          name: sshd-vsock.socket
+          state: stopped
       - name: Stop firewalld service
         service:
           name: firewalld
