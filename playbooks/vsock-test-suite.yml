@@ -29,6 +29,7 @@
         service:
           name: sshd-vsock.socket
           state: stopped
+        ignore_errors: yes
       - modprobe:
           name: vsock_loopback
           state: present
@@ -157,6 +158,7 @@
         service:
           name: sshd-vsock.socket
           state: stopped
+        ignore_errors: yes
       - name: Stop firewalld service
         service:
           name: firewalld
