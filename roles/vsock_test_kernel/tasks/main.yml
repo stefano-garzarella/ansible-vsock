@@ -18,7 +18,17 @@
   shell: "/tmp/vsock_test --mode=client --control-host={{ vsock_test_client.host }} --control-port={{ vsock_test_client.port }} --peer-cid={{ vsock_test_client.cid  }} {{ vsock_test_client.param | default('') }}"
   register: vsock_test_client_ret
 
-- name: Display vsock_test results
+- name: Display vsock_test client results
   when: vsock_test_client_ret.stdout_lines | default(false)
   debug:
     var: vsock_test_client_ret.stdout_lines
+
+- name: Display vsock_test client warnings/errors
+  when: vsock_test_client_ret.stderr_lines | default(false)
+  debug:
+    var: vsock_test_client_ret.stderr_lines
+
+- name: Display vsock_test server warnings/errors
+  when: vsock_test_server_ret.stderr_lines | default(false)
+  debug:
+    var: vsock_test_server_ret.stderr_lines
