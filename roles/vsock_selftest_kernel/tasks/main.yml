@@ -1,0 +1,27 @@
+---
+
+- copy:
+    src: vsock_test
+    dest: /tmp/vsock_test
+    mode: 0777
+    force: no
+
+- copy:
+    src: vmtest.sh
+    dest: /tmp/vmtest.sh
+    mode: 0777
+    force: no
+
+- name: Start vmtest
+  shell: "/tmp/vmtest.sh"
+  register: vmtest_ret
+
+- name: Display vmtest results
+  when: vmtest_ret.stdout_lines | default(false)
+  debug:
+    var: vmtest_ret.stdout_lines
+
+- name: Display vmtest_ret warnings/errors
+  when: vmtest_ret.stderr_lines | default(false)
+  debug:
+    var: vmtest_ret.stderr_lines

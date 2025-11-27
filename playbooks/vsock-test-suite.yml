@@ -87,6 +87,7 @@
       - debug:
           msg: "Run some tests between real host and vm0 to check backward compatibility"
   roles:
+      - role: vsock_selftest_kernel
       - role: vsock_test_kernel
         vars:
           vsock_test_server: { port: "12345", cid: "2" }
@@ -184,6 +185,7 @@
       - debug:
           msg: "Run test servers in the host"
   roles:
+      - role: vsock_selftest_kernel
       - role: vsock_test_kernel
         vars:
           vsock_test_server: { port: "12345", cid: "{{ l1_vms[0].cid }}" }
