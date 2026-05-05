@@ -7,18 +7,18 @@
     force: no
 
 - name: Start iperf3 server
-  when: iperf_server | default(false)
+  when: iperf_server is defined
   shell: "/tmp/iperf3 --vsock -s {{ iperf_server.param | default('') }}"
   register: iperf_server_ret
   async: 200
   poll: 0
 
 - name: Start iperf3 client
-  when: iperf_client | default(false)
+  when: iperf_client is defined
   shell: "/tmp/iperf3 --vsock -c {{ iperf_client.cid }} {{ iperf_client.param | default('') }}"
   register: iperf_client_ret
 
 - name: Display iperf3 results
-  when: iperf_client_ret.stdout_lines | default(false)
+  when: iperf_client_ret.stdout_lines | default([]) | length > 0
   debug:
     var: iperf_client_ret.stdout_lines
