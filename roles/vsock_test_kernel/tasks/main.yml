@@ -7,15 +7,19 @@
     force: no
 
 - name: Start vsock_test server
-  when: vsock_test_server is defined
-  shell: "/tmp/vsock_test --mode=server --control-port={{ vsock_test_server.port }} --peer-cid={{ vsock_test_server.cid  }} {{ vsock_test_server.param | default('') }}"
+  when: vsock_test_server is defined and vsock_test_server is not none
+  vars:
+    _server: "{{ vsock_test_server | default({}, true) }}"
+  shell: "/tmp/vsock_test --mode=server --control-port={{ _server.port }} --peer-cid={{ _server.cid }} {{ _server.param | default('') }}"
   register: vsock_test_server_ret
   async: 100
   poll: 0
 
 - name: Start vsock_test client
-  when: vsock_test_client is defined
-  shell: "/tmp/vsock_test --mode=client --control-host={{ vsock_test_client.host }} --control-port={{ vsock_test_client.port }} --peer-cid={{ vsock_test_client.cid  }} {{ vsock_test_client.param | default('') }}"
+  when: vsock_test_client is defined and vsock_test_client is not none
+  vars:
+    _client: "{{ vsock_test_client | default({}, true) }}"
+  shell: "/tmp/vsock_test --mode=client --control-host={{ _client.host }} --control-port={{ _client.port }} --peer-cid={{ _client.cid }} {{ _client.param | default('') }}"
   register: vsock_test_client_ret
 
 - name: Display vsock_test client results

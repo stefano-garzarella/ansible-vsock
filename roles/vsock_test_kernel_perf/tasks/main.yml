@@ -7,15 +7,19 @@
     force: no
 
 - name: Start vsock_perf server
-  when: vsock_perf_server is defined
-  shell: "/tmp/vsock_perf {{ vsock_perf_server.param | default('') }}"
+  when: vsock_perf_server is defined and vsock_perf_server is not none
+  vars:
+    _server: "{{ vsock_perf_server | default({}, true) }}"
+  shell: "/tmp/vsock_perf {{ _server.param | default('') }}"
   register: vsock_perf_server_ret
   async: 200
   poll: 0
 
 - name: Start vsock_perf client
-  when: vsock_perf_client is defined
-  shell: "/tmp/vsock_perf --sender {{ vsock_perf_client.cid }} {{ vsock_perf_client.param | default('') }}"
+  when: vsock_perf_client is defined and vsock_perf_client is not none
+  vars:
+    _client: "{{ vsock_perf_client | default({}, true) }}"
+  shell: "/tmp/vsock_perf --sender {{ _client.cid }} {{ _client.param | default('') }}"
   register: vsock_perf_client_ret
 
 - name: Display vsock_perf_client results
