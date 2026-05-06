@@ -1034,20 +1034,22 @@ __test_loopback_two_netns() {
 	log_host "Launching socat in ns ${ns1}"
 	outfile=$(mktemp)
 
-	ip netns exec "${ns1}" socat VSOCK-LISTEN:"${port}" STDOUT > "${outfile}" 2>/dev/null &
+	ip netns exec "${ns1}" socat VSOCK-LISTEN:"${port}" OPEN:"${outfile},sync" &
 	pid=$!
 	host_wait_for_listener "${ns1}" "${port}" "vsock"
 
 	log_host "Launching socat in ns ${ns0}"
-	echo TEST | ip netns exec "${ns0}" socat STDIN VSOCK-CONNECT:1:"${port}" 2>/dev/null
+	echo TEST | ip netns exec "${ns0}" socat STDIN VSOCK-CONNECT:1:"${port}"
 	terminate_pids "${pid}"
 
 	result=$(cat "${outfile}")
-	rm -f "${outfile}"
 
 	if [[ "${result}" == TEST ]]; then
+		rm -f "${outfile}"
 		return 0
 	fi
+
+	log_host "Unexpected result - found ${result} in ${outfile}"
 
 	return 1
 }
