@@ -6,23 +6,8 @@
     mode: 0777
     force: no
 
-- name: Start vsock_diag_test server
-  when: vsock_diag_test_server is defined and vsock_diag_test_server is not none
-  vars:
-    _server: "{{ vsock_diag_test_server | default({}, true) }}"
-  shell: "/tmp/vsock_diag_test --mode=server --control-port={{ _server.port }} --peer-cid={{ _server.cid }} {{ _server.param | default('') }}"
-  register: vsock_diag_test_server_ret
-  async: 100
-  poll: 0
-
-- name: Start vsock_diag_test client
-  when: vsock_diag_test_client is defined and vsock_diag_test_client is not none
-  vars:
-    _client: "{{ vsock_diag_test_client | default({}, true) }}"
-  shell: "/tmp/vsock_diag_test --mode=client --control-host={{ _client.host }} --control-port={{ _client.port }} --peer-cid={{ _client.cid }} {{ _client.param | default('') }}"
-  register: vsock_diag_test_client_ret
-
-- name: Display vsock_diag_test results
-  when: vsock_diag_test_client_ret.stdout_lines | default([]) | length > 0
-  debug:
-    var: vsock_diag_test_client_ret.stdout_lines
+- name: Run vsock_diag_test ({{ vsock_diag_test_repeat | default(1) }} iterations)
+  include_tasks: run_test.yml
+  loop: "{{ range(1, (vsock_diag_test_repeat | default(1) | int) + 1) | list }}"
+  loop_control:
+    loop_var: vsock_diag_test_iteration

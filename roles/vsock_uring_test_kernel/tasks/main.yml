@@ -6,23 +6,8 @@
     mode: 0777
     force: no
 
-- name: Start vsock_uring_test server
-  when: vsock_uring_test_server is defined and vsock_uring_test_server is not none
-  vars:
-    _server: "{{ vsock_uring_test_server | default({}, true) }}"
-  shell: "/tmp/vsock_uring_test --mode=server --control-port={{ _server.port }} --peer-cid={{ _server.cid }} {{ _server.param | default('') }}"
-  register: vsock_uring_test_server_ret
-  async: 100
-  poll: 0
-
-- name: Start vsock_uring_test client
-  when: vsock_uring_test_client is defined and vsock_uring_test_client is not none
-  vars:
-    _client: "{{ vsock_uring_test_client | default({}, true) }}"
-  shell: "/tmp/vsock_uring_test --mode=client --control-host={{ _client.host }} --control-port={{ _client.port }} --peer-cid={{ _client.cid }} {{ _client.param | default('') }}"
-  register: vsock_uring_test_client_ret
-
-- name: Display vsock_test results
-  when: vsock_uring_test_client_ret.stdout_lines | default([]) | length > 0
-  debug:
-    var: vsock_uring_test_client_ret.stdout_lines
+- name: Run vsock_uring_test ({{ vsock_uring_test_repeat | default(1) }} iterations)
+  include_tasks: run_test.yml
+  loop: "{{ range(1, (vsock_uring_test_repeat | default(1) | int) + 1) | list }}"
+  loop_control:
+    loop_var: vsock_uring_test_iteration

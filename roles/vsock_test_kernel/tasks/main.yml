@@ -6,33 +6,8 @@
     mode: 0777
     force: no
 
-- name: Start vsock_test server
-  when: vsock_test_server is defined and vsock_test_server is not none
-  vars:
-    _server: "{{ vsock_test_server | default({}, true) }}"
-  shell: "/tmp/vsock_test --mode=server --control-port={{ _server.port }} --peer-cid={{ _server.cid }} {{ _server.param | default('') }}"
-  register: vsock_test_server_ret
-  async: 100
-  poll: 0
-
-- name: Start vsock_test client
-  when: vsock_test_client is defined and vsock_test_client is not none
-  vars:
-    _client: "{{ vsock_test_client | default({}, true) }}"
-  shell: "/tmp/vsock_test --mode=client --control-host={{ _client.host }} --control-port={{ _client.port }} --peer-cid={{ _client.cid }} {{ _client.param | default('') }}"
-  register: vsock_test_client_ret
-
-- name: Display vsock_test client results
-  when: vsock_test_client_ret.stdout_lines | default([]) | length > 0
-  debug:
-    var: vsock_test_client_ret.stdout_lines
-
-- name: Display vsock_test client warnings/errors
-  when: vsock_test_client_ret.stderr_lines | default([]) | length > 0
-  debug:
-    var: vsock_test_client_ret.stderr_lines
-
-- name: Display vsock_test server warnings/errors
-  when: vsock_test_server_ret.stderr_lines | default([]) | length > 0
-  debug:
-    var: vsock_test_server_ret.stderr_lines
+- name: Run vsock_test ({{ vsock_test_repeat | default(1) }} iterations)
+  include_tasks: run_test.yml
+  loop: "{{ range(1, (vsock_test_repeat | default(1) | int) + 1) | list }}"
+  loop_control:
+    loop_var: vsock_test_iteration
